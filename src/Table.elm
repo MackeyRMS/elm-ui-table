@@ -4,10 +4,9 @@ module Table exposing
     , view
     , WithAbilities, attributes, headRowAttributes, bodyRowAttributes
     , withRowBorders, withStickyHeader
-    , InfiniteListConf, infinite
+    , InfiniteListConf, RowHeight, WindowHeight, infinite
     , keep
     , records
-    , RowHeight, WindowHeight
     )
 
 {-| Flexible helpers for constructing `Table`s
@@ -32,7 +31,7 @@ module Table exposing
 
 @docs WithAbilities, attributes, headRowAttributes, bodyRowAttributes
 @docs withRowBorders, withStickyHeader
-@docs InfiniteListConf, infinite
+@docs InfiniteListConf, RowHeight, WindowHeight, infinite
 
 
 # Filtering
@@ -92,6 +91,7 @@ edges =
 --     }
 
 
+{-| -}
 init : List r -> Table r
 init ls =
     Table
@@ -103,16 +103,19 @@ init ls =
         }
 
 
+{-| -}
 sort : Column ctx record msg -> Table record -> Table record
 sort c (Table i) =
     Table { i | sortedColumn = c.sort }
 
 
+{-| -}
 records : Table record -> List record
 records (Table t) =
     t.records
 
 
+{-| -}
 filtered : Maybe (record -> Bool) -> List (Column ctx record msg) -> Table record -> List record
 filtered filterFn columns (Table table) =
     let
@@ -166,6 +169,7 @@ filtered filterFn columns (Table table) =
                 |> filter
 
 
+{-| -}
 type Table record
     = Table (Internal record)
 
@@ -181,6 +185,7 @@ type alias Internal record =
     }
 
 
+{-| -}
 preFilter : Column ctx r msg -> String -> Table r -> Table r
 preFilter c string (Table i) =
     Table { i | filters = Dict.insert c.title string i.filters }
@@ -193,6 +198,7 @@ preFilter c string (Table i) =
 --     | Asynchronous (Async r)
 
 
+{-| -}
 type alias WithAbilities =
     { can_add_table_attributes : ()
     , can_add_header_row_attributes : ()
@@ -201,6 +207,7 @@ type alias WithAbilities =
     }
 
 
+{-| -}
 type View c ctx record msg
     = View (InternalView ctx record msg)
 
@@ -219,6 +226,7 @@ type alias InternalView ctx record msg =
     }
 
 
+{-| -}
 type alias InfiniteListConf =
     { rowHeight : RowHeight
     , containerHeight : Maybe WindowHeight
@@ -226,10 +234,12 @@ type alias InfiniteListConf =
     }
 
 
+{-| -}
 type alias RowHeight =
     Length
 
 
+{-| -}
 type alias WindowHeight =
     Length
 
@@ -247,6 +257,7 @@ So
 --}
 
 
+{-| -}
 attributes :
     List (Attribute ctx msg)
     -> View { c | can_add_table_attributes : () } ctx record msg
@@ -255,6 +266,7 @@ attributes ls (View v) =
     View { v | attributes_ = v.attributes_ ++ ls }
 
 
+{-| -}
 headRowAttributes :
     List (Attribute ctx msg)
     -> View { c | can_add_header_row_attributes : () } ctx record msg
@@ -263,6 +275,7 @@ headRowAttributes ls (View v) =
     View { v | headRowAttributes_ = v.headRowAttributes_ ++ ls }
 
 
+{-| -}
 bodyRowAttributes :
     (record -> List (Attribute ctx msg))
     -> View { c | can_add_body_row_attributes : () } ctx record msg
@@ -271,21 +284,25 @@ bodyRowAttributes ls (View v) =
     View { v | bodyRowAttributes_ = \first r -> v.bodyRowAttributes_ first r ++ ls r }
 
 
+{-| -}
 withStickyHeader : View c ctx record msg -> View c ctx record msg
 withStickyHeader (View v) =
     View { v | sticky = True }
 
 
+{-| -}
 infinite : InfiniteListConf -> View c ctx record msg -> View c ctx record msg
 infinite conf (View v) =
     View { v | infinite_ = Just conf }
 
 
+{-| -}
 keep : (r -> Bool) -> View c ctx r msg -> View c ctx r msg
 keep pred (View v) =
     View { v | filter = Just pred }
 
 
+{-| -}
 withRowBorders :
     View { c | can_add_row_borders : () } ctx record msg
     -> View c ctx record msg
@@ -403,6 +420,7 @@ tooltip position s =
             E.none
 
 
+{-| -}
 view : View c ctx record msg -> Element ctx msg
 view (View ({ table, columns } as v)) =
     let

@@ -1,9 +1,8 @@
 module Table.Column exposing
     ( Column, date, dateTime, float, int, string, ellipsis, custom
-    , date_, int_, string_, custom_
+    , date_, dateTime_, int_, string_, custom_
     , Sorter(..)
     , keep, tooltip, withSort
-    , dateTime_
     )
 
 {-| Flexible helpers for constructing `Table.Column`s
@@ -16,7 +15,7 @@ module Table.Column exposing
 
 # Extended Constructors
 
-@docs date_, int_, string_, custom_
+@docs date_, dateTime_, int_, string_, custom_
 
 
 # Exposing Type Constructors
@@ -62,6 +61,7 @@ format time =
     E.with .tz (format_ >> E.text)
 
 
+{-| -}
 type alias Column ctx record msg =
     { title : String
     , startingWidth : Maybe Length
@@ -74,6 +74,7 @@ type alias Column ctx record msg =
     }
 
 
+{-| -}
 keep :
     (String -> String -> Bool)
     -> Column ctx record msg
@@ -82,6 +83,7 @@ keep fn c =
     { c | filter = Just fn }
 
 
+{-| -}
 tooltip :
     String
     -> Column ctx record msg
@@ -90,7 +92,7 @@ tooltip str c =
     { c | tooltip = Just str }
 
 
-{-| SIMPLE Column.date
+{-| SIMPLE
 -}
 date :
     String
@@ -105,6 +107,8 @@ date title_ startingWidth toPosix =
         (toPosix >> formatDate >> E.text)
 
 
+{-| COMPLEX
+-}
 dateTime_ : String -> Maybe Length -> (record -> Time.Posix) -> Column { ctx | tz : Time.Zone } record msg
 dateTime_ title_ startingWidth toPosix =
     date_
@@ -114,6 +118,8 @@ dateTime_ title_ startingWidth toPosix =
         (toPosix >> format)
 
 
+{-| SIMPLE
+-}
 dateTime :
     String
     -> Maybe Length
@@ -138,6 +144,8 @@ dateTime title_ startingWidth toPosix =
         (toPosix >> dateTime__)
 
 
+{-| COMPLEX
+-}
 date_ :
     String
     -> Maybe Length
@@ -156,6 +164,8 @@ date_ title_ startingWidth toPosix render =
     }
 
 
+{-| SIMPLE
+-}
 int :
     String
     -> Maybe Length
@@ -169,6 +179,8 @@ int title_ startingWidth toI =
         (toI >> String.fromInt >> text)
 
 
+{-| COMPLEX
+-}
 int_ :
     String
     -> Maybe Length
@@ -187,6 +199,8 @@ int_ title_ startingWidth toI render =
     }
 
 
+{-| SIMPLE
+-}
 float :
     String
     -> Maybe Length
@@ -204,7 +218,7 @@ float title_ startingWidth toF =
     }
 
 
-{-| SIPMLE Column.string
+{-| SIMPLE
 -}
 string :
     String
@@ -220,6 +234,7 @@ string title_ startingWidth toComparable =
         (toComparable >> Encode.string)
 
 
+{-| -}
 ellipsis : String -> Maybe Length -> (record -> String) -> Column ctx record msg
 ellipsis title_ startingWidth toComparable =
     let
@@ -248,6 +263,8 @@ ellipsis title_ startingWidth toComparable =
         (toComparable >> Encode.string)
 
 
+{-| COMPLEX
+-}
 string_ :
     String
     -> Maybe Length
@@ -267,6 +284,8 @@ string_ title_ startingWidth toComparable render encoder =
     }
 
 
+{-| SIMPLE
+-}
 custom :
     String
     -> Maybe Length
@@ -276,10 +295,8 @@ custom title_ startingWidth render =
     custom_ title_ startingWidth render (\_ -> Encode.null)
 
 
-
--- withSort
-
-
+{-| COMPLEX
+-}
 custom_ :
     String
     -> Maybe Length
@@ -298,6 +315,7 @@ custom_ title_ startingWidth render encoder =
     }
 
 
+{-| -}
 withSort : (record -> comparable) -> Column ctx record msg -> Column ctx record msg
 withSort toComparable column =
     { column
@@ -309,6 +327,7 @@ withSort toComparable column =
 -- Sort helpers
 
 
+{-| -}
 type Sorter record
     = Sorted String (List record -> List record)
     | Unsorted
