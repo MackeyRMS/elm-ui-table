@@ -3,7 +3,7 @@
     "name": "MackeyRMS/elm-ui-table",
     "summary": "Data grid built with elm-ui",
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "exposed-modules": [
         "Table",
         "Table.Column"
