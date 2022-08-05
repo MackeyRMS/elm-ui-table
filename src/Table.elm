@@ -716,8 +716,7 @@ toUnstyled ctx =
         { options = [ E.noStaticStyleSheet ] }
         [ Font.family [ Font.typeface fontFamily ]
         , Font.regular
-
-        -- , E.withAttribute .defaultFontSize fontSize
+        , Font.size 16
         , E.height (E.fill |> E.minimum 0)
         , E.width E.fill
         ]
@@ -937,6 +936,7 @@ linedHelp { idPrefix } toMsg (Table table) columns =
         , headRowAttributes_ =
             E.centerY
                 :: Background.color grayValue4
+                :: Font.size 16
                 :: Font.bold
                 :: gaps
         , bodyRowAttributes_ =
