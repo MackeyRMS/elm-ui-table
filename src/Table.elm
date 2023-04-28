@@ -1,5 +1,6 @@
 module Table exposing
-    ( init, sort, preFilter, filtered, Table
+    ( Table, init
+    , sort, desc, preFilter, filtered
     , View, lined, build
     , view
     , WithAbilities, attributes, headRowAttributes, bodyRowAttributes
@@ -14,7 +15,8 @@ module Table exposing
 
 # Construct a Table from a List of records with an id key
 
-@docs init, sort, preFilter, filtered, Table
+@docs Table, init
+@docs sort, desc, preFilter, filtered
 
 
 # Prepare the View for a Table giving it a Msg constructor that takes a Table
@@ -107,6 +109,12 @@ init ls =
 sort : Column ctx record msg -> Table record -> Table record
 sort c (Table i) =
     Table { i | sortedColumn = c.sort }
+
+
+{-| -}
+desc : Table record -> Table record
+desc (Table i) =
+    Table { i | ord = Desc }
 
 
 {-| -}
@@ -978,6 +986,8 @@ build { idPrefix } toMsg (Table table) columns =
         }
 
 
+{-| For specifying Sort Ordering when initializing a Table.
+-}
 type Ord
     = Asc
     | Desc
