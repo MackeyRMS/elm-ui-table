@@ -243,7 +243,7 @@ ellipsis title_ startingWidth toComparable =
             let
                 elmUiElement_text_classes : String
                 elmUiElement_text_classes =
-                    "s t wf hf"
+                    "elmui-s elmui-t elmui-wf elmui-hf"
             in
             H.span
                 [ Attr.style "text-overflow" "ellipsis"
